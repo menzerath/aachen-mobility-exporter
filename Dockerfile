@@ -4,6 +4,6 @@ LABEL maintainer="Marvin Menzerath <dev@marvin.pro>"
 RUN apk add -U --no-cache ca-certificates
 
 WORKDIR /app
-COPY /build/app .
+COPY build/exporter .
 
-ENTRYPOINT ["./app"]
+ENTRYPOINT ["./exporter"]
