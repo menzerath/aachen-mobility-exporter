@@ -29,7 +29,6 @@ jobs:
       - name: store binary
         uses: actions/upload-artifact@v2.3.1
         with:
-          name: ${{ GITHUB_REPOSITORY#*/ }}
           path: build/app
 
   docker:
