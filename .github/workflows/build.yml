@@ -36,6 +36,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
+      - name: checkout repository
+        uses: actions/checkout@v2.4.0
       - name: download binary
         uses: actions/download-artifact@v2.1.0
         with:
