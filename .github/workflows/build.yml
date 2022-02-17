@@ -62,7 +62,7 @@ jobs:
         with:
           context: .
           tags:
-            ghcr.io/${{ github.repository }}:${{ github.event.ref }}
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
             ghcr.io/${{ github.repository }}:latest
           push: true
 
