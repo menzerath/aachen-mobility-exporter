@@ -51,13 +51,17 @@ jobs:
         uses: docker/build-push-action@v2.9.0
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         with:
+          context: .
           tags: ghcr.io/${{ github.repository }}:development
           push: ${{ github.ref == 'refs/heads/main' }}
       - name: build latest image
         uses: docker/build-push-action@v2.9.0
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         with:
-          tags: ghcr.io/${{ github.repository }}:${{ github.event.ref }},ghcr.io/${{ github.repository }}:latest
+          context: .
+          tags:
+            ghcr.io/${{ github.repository }}:${{ github.event.ref }}
+            ghcr.io/${{ github.repository }}:latest
           push: true
 
   release:
