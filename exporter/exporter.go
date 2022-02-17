@@ -2,10 +2,10 @@ package exporter
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/menzerath/aachen-verkehr-exporter/client"
 	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
 )
 
 // Exporter collects and exposes parking data from the public api.
@@ -50,7 +50,7 @@ func (e *Exporter) Describe(c chan<- *prometheus.Desc) {
 func (e *Exporter) Collect(c chan<- prometheus.Metric) {
 	parkingData, err := client.GetParkingData()
 	if err != nil {
-		log.Printf("fetching parking data failed: %s", err)
+		log.Errorf("fetching parking data failed: %s", err)
 		for _, desc := range e.descriptions {
 			c <- prometheus.NewInvalidMetric(desc, err)
 		}
