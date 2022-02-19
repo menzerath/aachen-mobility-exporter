@@ -31,7 +31,7 @@ type ParkingPosition struct {
 	Navigation ParkingPositionCoordinates `json:"Navigation"`
 }
 
-// ParkingPositionCoordinates describes the position of a parking position.
+// ParkingPositionCoordinates contains the coordinates of a parking position.
 type ParkingPositionCoordinates struct {
 	Lat  float64 `json:"Lat"`
 	Long float64 `json:"Long"`
@@ -54,8 +54,7 @@ func GetParkingData() ([]Parking, error) {
 	}
 
 	var data []Parking
-	err = json.NewDecoder(response.Body).Decode(&data)
-	if err != nil {
+	if err = json.NewDecoder(response.Body).Decode(&data); err != nil {
 		return data, err
 	}
 	return data, nil
