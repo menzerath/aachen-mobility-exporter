@@ -2,6 +2,7 @@ package exporter
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/menzerath/aachen-verkehr-exporter/client"
 	"github.com/menzerath/aachen-verkehr-exporter/log"
@@ -20,21 +21,33 @@ func NewExporter() *Exporter {
 	return &Exporter{
 		descriptions: []*prometheus.Desc{
 			prometheus.NewDesc(
-				"aachen_mobility_parking_total",
-				"How many parking spots are available in total.",
+				"aachen_mobility_parking_roadside_total",
+				"How many roadside parking spots are available in total.",
 				[]string{"location_id", "name", "type", "sub_locations", "parent_locations", "latitude", "longitude"},
 				nil,
 			),
 			prometheus.NewDesc(
-				"aachen_mobility_parking_occupied",
-				"How many parking spots are occupied.",
+				"aachen_mobility_parking_roadside_occupied",
+				"How many roadside parking spots are occupied.",
 				[]string{"location_id", "name", "type", "sub_locations", "parent_locations", "latitude", "longitude"},
 				nil,
 			),
 			prometheus.NewDesc(
-				"aachen_mobility_parking_free",
-				"How many parking spots are free.",
+				"aachen_mobility_parking_roadside_free",
+				"How many roadside parking spots are free.",
 				[]string{"location_id", "name", "type", "sub_locations", "parent_locations", "latitude", "longitude"},
+				nil,
+			),
+			prometheus.NewDesc(
+				"aachen_mobility_parking_carpark_load",
+				"Percentage describing how many car-park parking spots are taken.",
+				[]string{"id", "name", "description", "trend", "latitude", "longitude"},
+				nil,
+			),
+			prometheus.NewDesc(
+				"aachen_mobility_parking_carpark_free",
+				"How many car-park parking spots are free.",
+				[]string{"id", "name", "description", "trend", "latitude", "longitude"},
 				nil,
 			),
 		},
@@ -51,7 +64,7 @@ func (e *Exporter) Describe(c chan<- *prometheus.Desc) {
 
 // Collect collects and exposes all metric values.
 func (e *Exporter) Collect(c chan<- prometheus.Metric) {
-	parkingData, err := client.GetRoadsideParkingData()
+	roadsideParkingData, err := client.GetRoadsideParkingData()
 	if err != nil {
 		e.logger.Error("fetching roadside-parking data failed", zap.Error(err))
 		for _, desc := range e.descriptions {
@@ -60,7 +73,16 @@ func (e *Exporter) Collect(c chan<- prometheus.Metric) {
 		return
 	}
 
-	for _, parking := range parkingData {
+	carParkParkingData, err := client.GetCarParkParkingData()
+	if err != nil {
+		e.logger.Error("fetching car-park-parking data failed", zap.Error(err))
+		for _, desc := range e.descriptions {
+			c <- prometheus.NewInvalidMetric(desc, err)
+		}
+		return
+	}
+
+	for _, parking := range roadsideParkingData {
 		c <- prometheus.MustNewConstMetric(
 			e.descriptions[0],
 			prometheus.GaugeValue,
@@ -96,6 +118,36 @@ func (e *Exporter) Collect(c chan<- prometheus.Metric) {
 			fmt.Sprintf("%d", len(parking.ParentLocations)),
 			fmt.Sprintf("%f", parking.Positions.Center.Lat),
 			fmt.Sprintf("%f", parking.Positions.Center.Long),
+		)
+	}
+
+	for _, parking := range carParkParkingData.Value {
+		c <- prometheus.MustNewConstMetric(
+			e.descriptions[3],
+			prometheus.GaugeValue,
+			parking.Datastreams[0].Observations[0].Parameters.Load,
+			fmt.Sprintf("%d", parking.ID),
+			parking.Name,
+			parking.Description,
+			parking.Datastreams[0].Observations[0].Parameters.Trend,
+			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[0]),
+			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[1]),
+		)
+
+		free, err := strconv.ParseFloat(parking.Datastreams[0].Observations[0].Result, 64)
+		if err != nil {
+			e.logger.Error("parsing car-park-parking free failed", zap.Error(err))
+		}
+		c <- prometheus.MustNewConstMetric(
+			e.descriptions[4],
+			prometheus.GaugeValue,
+			free,
+			fmt.Sprintf("%d", parking.ID),
+			parking.Name,
+			parking.Description,
+			parking.Datastreams[0].Observations[0].Parameters.Trend,
+			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[0]),
+			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[1]),
 		)
 	}
 }
