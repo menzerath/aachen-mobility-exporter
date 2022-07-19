@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetParkingData(t *testing.T) {
+func TestGetRoadsideParkingData(t *testing.T) {
 	data, err := GetRoadsideParkingData()
 	assert.NoError(t, err)
 	assert.NotEmpty(t, data)
