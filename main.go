@@ -6,22 +6,27 @@ import (
 	"os"
 
 	"github.com/menzerath/aachen-verkehr-exporter/exporter"
+	"github.com/menzerath/aachen-verkehr-exporter/log"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // DefaultPort will be used if not overridden by using the PORT environment variable.
 const DefaultPort = "9090"
 
 func main() {
+	log := log.NewLogger()
+	defer log.Sync()
+
 	port := DefaultPort
 	if value, exists := os.LookupEnv("PORT"); exists {
 		port = value
 	}
-	log.Infof("starting exporter on port %s", port)
+	log.Info("starting exporter", zap.String("port", port))
 
 	prometheus.MustRegister(exporter.NewExporter())
 	http.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
+
+	log.Fatal("ListenAndServe failed", zap.Error(http.ListenAndServe(fmt.Sprintf(":%s", port), nil)))
 }
