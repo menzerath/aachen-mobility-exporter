@@ -7,7 +7,7 @@ import (
 )
 
 func TestGetParkingData(t *testing.T) {
-	data, err := GetParkingData()
+	data, err := GetRoadsideParkingData()
 	assert.NoError(t, err)
 	assert.NotEmpty(t, data)
 }

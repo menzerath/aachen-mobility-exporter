@@ -51,9 +51,9 @@ func (e *Exporter) Describe(c chan<- *prometheus.Desc) {
 
 // Collect collects and exposes all metric values.
 func (e *Exporter) Collect(c chan<- prometheus.Metric) {
-	parkingData, err := client.GetParkingData()
+	parkingData, err := client.GetRoadsideParkingData()
 	if err != nil {
-		e.logger.Error("fetching parking data failed", zap.Error(err))
+		e.logger.Error("fetching roadside-parking data failed", zap.Error(err))
 		for _, desc := range e.descriptions {
 			c <- prometheus.NewInvalidMetric(desc, err)
 		}
