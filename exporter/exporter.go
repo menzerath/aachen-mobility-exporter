@@ -130,8 +130,8 @@ func (e *Exporter) Collect(c chan<- prometheus.Metric) {
 			parking.Name,
 			parking.Description,
 			parking.Datastreams[0].Observations[0].Parameters.Trend,
-			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[0]),
 			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[1]),
+			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[0]),
 		)
 
 		free, err := strconv.ParseFloat(parking.Datastreams[0].Observations[0].Result, 64)
@@ -146,8 +146,8 @@ func (e *Exporter) Collect(c chan<- prometheus.Metric) {
 			parking.Name,
 			parking.Description,
 			parking.Datastreams[0].Observations[0].Parameters.Trend,
-			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[0]),
 			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[1]),
+			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[0]),
 		)
 	}
 }
