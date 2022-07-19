@@ -22,19 +22,16 @@ type RoadsideParking struct {
 	SubLocations    []string `json:"SubLocations"`
 	ParentLocations []string `json:"ParentLocations"`
 
-	Positions RoadsideParkingPosition `json:"Positions"`
-}
-
-// RoadsideParkingPosition contains two locations of a roadside-parking position.
-type RoadsideParkingPosition struct {
-	Center     RoadsideParkingPositionCoordinates `json:"Center"`
-	Navigation RoadsideParkingPositionCoordinates `json:"Navigation"`
-}
-
-// RoadsideParkingPositionCoordinates contains the coordinates of a roadside-parking position.
-type RoadsideParkingPositionCoordinates struct {
-	Lat  float64 `json:"Lat"`
-	Long float64 `json:"Long"`
+	Positions struct {
+		Center struct {
+			Lat  float64 `json:"Lat"`
+			Long float64 `json:"Long"`
+		} `json:"Center"`
+		Navigation struct {
+			Lat  float64 `json:"Lat"`
+			Long float64 `json:"Long"`
+		} `json:"Navigation"`
+	}
 }
 
 // GetRoadsideParkingData returns the current roadside-parking situation from the public api.
