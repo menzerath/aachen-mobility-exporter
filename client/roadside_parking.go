@@ -7,10 +7,10 @@ import (
 	"net/http"
 )
 
-const parkingURL = "https://verkehr.aachen.de/api/sonah/api/v2/locations"
+const roadsideParkingURL = "https://verkehr.aachen.de/api/sonah/api/v2/locations"
 
-// Parking describes the current parking situation at a specific location.
-type Parking struct {
+// RoadsideParking describes the current roadside-parking situation at a specific location.
+type RoadsideParking struct {
 	LocationID int64  `json:"LocationID"`
 	Name       string `json:"Name"`
 	Type       string `json:"Type"`
@@ -22,24 +22,21 @@ type Parking struct {
 	SubLocations    []string `json:"SubLocations"`
 	ParentLocations []string `json:"ParentLocations"`
 
-	Positions ParkingPosition `json:"Positions"`
+	Positions struct {
+		Center struct {
+			Lat  float64 `json:"Lat"`
+			Long float64 `json:"Long"`
+		} `json:"Center"`
+		Navigation struct {
+			Lat  float64 `json:"Lat"`
+			Long float64 `json:"Long"`
+		} `json:"Navigation"`
+	}
 }
 
-// ParkingPosition contains two locations of a parking position.
-type ParkingPosition struct {
-	Center     ParkingPositionCoordinates `json:"Center"`
-	Navigation ParkingPositionCoordinates `json:"Navigation"`
-}
-
-// ParkingPositionCoordinates contains the coordinates of a parking position.
-type ParkingPositionCoordinates struct {
-	Lat  float64 `json:"Lat"`
-	Long float64 `json:"Long"`
-}
-
-// GetParkingData returns the current parking situation from the public api.
-func GetParkingData() ([]Parking, error) {
-	response, err := http.Get(parkingURL)
+// GetRoadsideParkingData returns the current roadside-parking situation from the public api.
+func GetRoadsideParkingData() ([]RoadsideParking, error) {
+	response, err := http.Get(roadsideParkingURL)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +50,7 @@ func GetParkingData() ([]Parking, error) {
 		return nil, fmt.Errorf("http error %d: %s", response.StatusCode, message)
 	}
 
-	var data []Parking
+	var data []RoadsideParking
 	if err = json.NewDecoder(response.Body).Decode(&data); err != nil {
 		return data, err
 	}
