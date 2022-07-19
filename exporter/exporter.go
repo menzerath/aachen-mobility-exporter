@@ -40,7 +40,7 @@ func NewExporter() *Exporter {
 			),
 			prometheus.NewDesc(
 				"aachen_mobility_parking_carpark_load",
-				"Percentage describing how many car-park parking spots are taken.",
+				"Percentage of how many car-park parking spots are taken.",
 				[]string{"id", "name", "description", "trend", "latitude", "longitude"},
 				nil,
 			),
@@ -136,7 +136,7 @@ func (e *Exporter) Collect(c chan<- prometheus.Metric) {
 
 		free, err := strconv.ParseFloat(parking.Datastreams[0].Observations[0].Result, 64)
 		if err != nil {
-			e.logger.Error("parsing car-park-parking free failed", zap.Error(err))
+			e.logger.Warn("parsing car-park-parking free failed", zap.Error(err))
 		}
 		c <- prometheus.MustNewConstMetric(
 			e.descriptions[4],
