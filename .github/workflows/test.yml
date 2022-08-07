@@ -26,6 +26,6 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v3.0.2
       - name: run revive
-        uses: morphy2k/revive-action@v2.3.1
+        uses: morphy2k/revive-action@v2.4.0
         with:
           exclude: "./vendor/..."
