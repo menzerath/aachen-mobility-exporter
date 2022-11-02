@@ -17,7 +17,7 @@ github.com/matttproud/golang_protobuf_extensions/pbutil
 # github.com/pmezard/go-difflib v1.0.0
 ## explicit
 github.com/pmezard/go-difflib/difflib
-# github.com/prometheus/client_golang v1.13.0
+# github.com/prometheus/client_golang v1.13.1
 ## explicit; go 1.17
 github.com/prometheus/client_golang/prometheus
 github.com/prometheus/client_golang/prometheus/internal
