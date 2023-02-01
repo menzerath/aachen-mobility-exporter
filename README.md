@@ -13,12 +13,12 @@ $ curl http://localhost:9090/metrics
 
 # HELP aachen_mobility_parking_carpark_free How many car-park parking spots are free.
 # TYPE aachen_mobility_parking_carpark_free gauge
-aachen_mobility_parking_carpark_free{description="APAG Parkhaus",id="865",latitude="6.045195",longitude="50.774804",name="Uniklinik",trend="up"} 1744
+aachen_mobility_parking_carpark_free{description="Parkdaten MDM",id="3493",latitude="50.780552",longitude="6.092799",name="P01-Eurogress",status="spacesAvailable",trend="stable"} 480
 ...
 
 # HELP aachen_mobility_parking_carpark_load Percentage of how many car-park parking spots are taken.
 # TYPE aachen_mobility_parking_carpark_load gauge
-aachen_mobility_parking_carpark_load{description="APAG Parkhaus",id="865",latitude="6.045195",longitude="50.774804",name="Uniklinik",trend="up"} 14.55
+aachen_mobility_parking_carpark_load{description="Parkdaten MDM",id="3493",latitude="50.780552",longitude="6.092799",name="P01-Eurogress",status="spacesAvailable",trend="stable"} 14.29
 ...
 
 # HELP aachen_mobility_parking_roadside_free How many roadside parking spots are free.
