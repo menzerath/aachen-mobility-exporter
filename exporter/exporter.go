@@ -2,7 +2,6 @@ package exporter
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/menzerath/aachen-verkehr-exporter/client"
 	"github.com/menzerath/aachen-verkehr-exporter/log"
@@ -41,13 +40,13 @@ func NewExporter() *Exporter {
 			prometheus.NewDesc(
 				"aachen_mobility_parking_carpark_load",
 				"Percentage of how many car-park parking spots are taken.",
-				[]string{"id", "name", "description", "trend", "latitude", "longitude"},
+				[]string{"id", "name", "description", "status", "trend", "latitude", "longitude"},
 				nil,
 			),
 			prometheus.NewDesc(
 				"aachen_mobility_parking_carpark_free",
 				"How many car-park parking spots are free.",
-				[]string{"id", "name", "description", "trend", "latitude", "longitude"},
+				[]string{"id", "name", "description", "status", "trend", "latitude", "longitude"},
 				nil,
 			),
 		},
@@ -122,30 +121,38 @@ func (e *Exporter) Collect(c chan<- prometheus.Metric) {
 	}
 
 	for _, parking := range carParkParkingData.Value {
+		var (
+			status string
+			trend  string
+		)
+		if parking.MultiDatastreams[0].Observations[0].Result[7] != nil {
+			status = parking.MultiDatastreams[0].Observations[0].Result[7].(string)
+		}
+		if parking.MultiDatastreams[0].Observations[0].Result[4] != nil {
+			trend = parking.MultiDatastreams[0].Observations[0].Result[4].(string)
+		}
+
 		c <- prometheus.MustNewConstMetric(
 			e.descriptions[3],
 			prometheus.GaugeValue,
-			parking.Datastreams[0].Observations[0].Parameters.Load,
+			parking.MultiDatastreams[0].Observations[0].Result[3].(float64),
 			fmt.Sprintf("%d", parking.ID),
 			parking.Name,
 			parking.Description,
-			parking.Datastreams[0].Observations[0].Parameters.Trend,
+			status,
+			trend,
 			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[1]),
 			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[0]),
 		)
-
-		free, err := strconv.ParseFloat(parking.Datastreams[0].Observations[0].Result, 64)
-		if err != nil {
-			e.logger.Warn("parsing car-park-parking free failed", zap.Error(err))
-		}
 		c <- prometheus.MustNewConstMetric(
 			e.descriptions[4],
 			prometheus.GaugeValue,
-			free,
+			parking.MultiDatastreams[0].Observations[0].Result[0].(float64),
 			fmt.Sprintf("%d", parking.ID),
 			parking.Name,
 			parking.Description,
-			parking.Datastreams[0].Observations[0].Parameters.Trend,
+			status,
+			trend,
 			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[1]),
 			fmt.Sprintf("%f", parking.Locations[0].Location.Geometry.Coordinates[0]),
 		)
