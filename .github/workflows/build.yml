@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v3.6.0
       - name: setup golang
         uses: actions/setup-go@v4.1.0
         with:
@@ -37,7 +37,7 @@ jobs:
     needs: [build]
     steps:
       - name: checkout repository
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v3.6.0
       - name: download binary
         uses: actions/download-artifact@v3.0.2
         with:
