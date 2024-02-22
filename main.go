@@ -26,7 +26,7 @@ func main() {
 	prometheus.MustRegister(exporter.NewExporter())
 	http.Handle("/metrics", promhttp.Handler())
 
-	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil && err != http.ErrServerClosed {
 		slog.Error("http listen", slog.Any("error", err))
 		os.Exit(1)
 	}
