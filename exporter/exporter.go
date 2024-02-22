@@ -2,17 +2,15 @@ package exporter
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/menzerath/aachen-verkehr-exporter/client"
-	"github.com/menzerath/aachen-verkehr-exporter/log"
 	"github.com/prometheus/client_golang/prometheus"
-	"go.uber.org/zap"
 )
 
 // Exporter collects and exposes parking data from the public api.
 type Exporter struct {
 	descriptions []*prometheus.Desc
-	logger       *zap.Logger
 }
 
 // NewExporter creates and returns a new Exporter.
@@ -50,7 +48,6 @@ func NewExporter() *Exporter {
 				nil,
 			),
 		},
-		logger: log.NewLogger(),
 	}
 }
 
@@ -65,7 +62,7 @@ func (e *Exporter) Describe(c chan<- *prometheus.Desc) {
 func (e *Exporter) Collect(c chan<- prometheus.Metric) {
 	roadsideParkingData, err := client.GetRoadsideParkingData()
 	if err != nil {
-		e.logger.Error("fetching roadside-parking data failed", zap.Error(err))
+		slog.Error("fetching roadside-parking data failed", slog.Any("error", err))
 		for _, desc := range e.descriptions {
 			c <- prometheus.NewInvalidMetric(desc, err)
 		}
@@ -74,7 +71,7 @@ func (e *Exporter) Collect(c chan<- prometheus.Metric) {
 
 	carParkParkingData, err := client.GetCarParkParkingData()
 	if err != nil {
-		e.logger.Error("fetching car-park-parking data failed", zap.Error(err))
+		slog.Error("fetching car-park-parking data failed", slog.Any("error", err))
 		for _, desc := range e.descriptions {
 			c <- prometheus.NewInvalidMetric(desc, err)
 		}
