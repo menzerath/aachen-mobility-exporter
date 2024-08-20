@@ -3,7 +3,7 @@ module github.com/menzerath/aachen-verkehr-exporter
 go 1.23.0
 
 require (
-	github.com/prometheus/client_golang v1.20.0
+	github.com/prometheus/client_golang v1.20.1
 	github.com/stretchr/testify v1.9.0
 )
 
