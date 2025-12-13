@@ -27,7 +27,7 @@ jobs:
           GOARCH: amd64
         run: go build -tags netgo -o build/exporter main.go
       - name: store binary
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: exporter
           path: build/exporter
@@ -39,7 +39,7 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v6.0.1
       - name: download binary
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: exporter
           path: build
