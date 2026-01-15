@@ -1,6 +1,6 @@
 module github.com/menzerath/aachen-verkehr-exporter
 
-go 1.25.5
+go 1.25.6
 
 require (
 	github.com/prometheus/client_golang v1.23.2
